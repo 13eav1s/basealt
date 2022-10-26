@@ -6,8 +6,8 @@ from typing import List
 class Package:
     name: str = None
     epoch = set()
-    version = set()
-    release = set()
+    version: str = None
+    release: str = None
     arch = set()
     disttag = set()
     buildtime = set()
@@ -19,11 +19,11 @@ class Package:
     def __init__(self, name: str, epoch: str, version: str, release: str, arch: str, disttag: str, buildtime: str, source: str):
         self.name = name
         self.epoch = {epoch, }
-        self.version = {version, }
-        self.release = {release, }
-        self.arch = {release, }
-        self.disttag = {release, }
-        self.buildtime = {release, }
+        self.version = version
+        self.release = release
+        self.arch = {arch, }
+        self.disttag = {disttag, }
+        self.buildtime = {buildtime, }
         self.source = {source, }
 
 
@@ -31,8 +31,8 @@ def add_to_arr_packs(added_packs_f, array: List[Package], name, epoch, version, 
     if name in added_packs_f:
         i = added_packs_f.index(name)
         array[i].epoch.add(epoch)
-        array[i].version.add(version)
-        array[i].release.add(release)
+        array[i].version = version
+        array[i].release = release
         array[i].arch.add(arch)
         array[i].disttag.add(disttag)
         array[i].buildtime.add(buildtime)
@@ -73,8 +73,8 @@ added_packs_sisyphus = []
 added_packs_p10 = []
 
 
-add_packs_from_file_to_obj_array('test1', data_sisyphus, added_packs_sisyphus)
-add_packs_from_file_to_obj_array('test2', data_p10, added_packs_p10)
+add_packs_from_file_to_obj_array('sisyphus', data_sisyphus, added_packs_sisyphus)
+add_packs_from_file_to_obj_array('p10', data_p10, added_packs_p10)
 
 #  Вывод пакетов которых нет в sisyphus, но есть в p10
 get_special_packs(added_packs_p10, added_packs_sisyphus, data_p10)
@@ -83,4 +83,3 @@ get_special_packs(added_packs_p10, added_packs_sisyphus, data_p10)
 get_special_packs(added_packs_sisyphus, added_packs_p10, data_sisyphus)
 
 identical_packages = set(added_packs_p10) & set(added_packs_sisyphus)
-pass
