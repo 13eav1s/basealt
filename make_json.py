@@ -41,7 +41,7 @@ def add_to_arr_packs(added_packs_f, array: List[Package], name, epoch, version, 
         added_packs_f.append(name)
         pack = Package(name, epoch, version, release, arch, disttag, buildtime, source)
         array.append(copy.deepcopy(pack))
-        print('adding pack', pack.name, '...', sep='')
+        # print('adding pack', pack.name, '...', sep='')
 
 
 #  Преобразование пакетов из ветки в объекты класса и запись в массив
@@ -50,21 +50,41 @@ def add_packs_from_file_to_obj_array(file, array, added_packs):
         str_json = fj.readline()
         data = json.loads(str_json)
         size = 0
-        for i in data["packages"]:
+        last_procent = -1
+        all_size = int(data['length'])
+        for i in data['packages']:
             add_to_arr_packs(added_packs, array, i['name'], i['epoch'], i['version'], i['release'], i['arch'],
                              i['disttag'], i['buildtime'], i['source'])
             size += 1
-        print(size)
+            procent = int(size / all_size * 100)
+            if procent != last_procent:
+                print('\r', procent, '%', sep='', end='')
+            last_procent = procent
+    print()
 
 
 #  Получение пакетов ветки которых нет в другой
-def get_special_packs(branch1_names: List[str], branch2_names: List[str], branch1: List[Package]):
+def get_special_packs(branch_name: str, branch1_names: List[str], branch2_names: List[str], branch1: List[Package], result_dict: dict):
     count_packs = 0
     for pack_name_index in range(len(branch1_names)):
         if not (branch1_names[pack_name_index] in branch2_names):
-            print(branch1[pack_name_index])
+            dict_line = {
+                'name': branch1[pack_name_index].name,
+                'version': branch1[pack_name_index].version,
+                'release': branch1[pack_name_index].release,
+                'arch': list(branch1[pack_name_index].arch)
+            }
+            result_dict[branch_name].append(dict_line)
+            print('.', end='')
             count_packs += 1
     print(count_packs)
+
+
+def write_json(data, filename):
+    # data = json.dumps(data)
+    # data = json.loads(str(data))
+    with open(filename, 'w', encoding='utf-8') as file:
+        json.dump(data, file, indent=4)
 
 
 data_sisyphus = []
@@ -72,27 +92,47 @@ data_p10 = []
 added_packs_sisyphus = []
 added_packs_p10 = []
 
+#  Словарь, который будет переведен в JSON
+result_json = {
+    'only_in_p10': [],
+    'only_in_sisyphus': [],
+    'version_release_upper_in_sisyphus': []
+}
 
+print('____________________________Добавление пакетов p10___________________________')
 add_packs_from_file_to_obj_array('p10', data_p10, added_packs_p10)
+print('_________________________Добавление пакетов sisyphus_________________________')
 add_packs_from_file_to_obj_array('sisyphus', data_sisyphus, added_packs_sisyphus)
 
 #  Вывод пакетов которых нет в sisyphus, но есть в p10
-print('__________Вывод пакетов которых нет в sisyphus, но есть в p10__________')
-get_special_packs(added_packs_p10, added_packs_sisyphus, data_p10)
+print('_____________Запись пакетов которых нет в sisyphus, но есть в p10____________')
+get_special_packs('only_in_p10', added_packs_p10, added_packs_sisyphus, data_p10, result_json)
 
 #  Вывод пакетов которых нет в p10, но есть в sisyphus
-print('__________Вывод пакетов которых нет в p10, но есть в sisyphus__________')
-get_special_packs(added_packs_sisyphus, added_packs_p10, data_sisyphus)
+print('______________запись пакетов которых нет в p10, но есть в sisyphus_____________')
+get_special_packs('only_in_sisyphus', added_packs_sisyphus, added_packs_p10, data_sisyphus, result_json)
 
 identical_packages = set(added_packs_p10) & set(added_packs_sisyphus)
 
 #  Добавление идентичных пакетов для сравнения версий
 ident_packs_p10 = []
 ident_packs_sisyphus = []
-print('______________добавление пакетов version-release  которых больше в sisyphus чем в p10___________________')
+print('____добавление пакетов version-release  которых больше в sisyphus чем в p10___')
+col_packs = 0
 for pack in identical_packages:
     p10_new = data_p10[added_packs_p10.index(pack)]
     sisyphus_new = data_sisyphus[added_packs_sisyphus.index(pack)]
     if sisyphus_new.version > p10_new.version:
-        print(sisyphus_new)
-pass
+        col_packs += 1
+        print('.', end='')
+        sisyphus_new_dict = {
+            'name': sisyphus_new.name,
+            'version': sisyphus_new.version,
+            'release': sisyphus_new.release,
+            'arch': list(sisyphus_new.arch)
+        }
+        result_json['version_release_upper_in_sisyphus'].append(sisyphus_new_dict)
+print(col_packs)
+#  Запись полученного словаря в json
+write_json(result_json, 'result.JSON')
+
