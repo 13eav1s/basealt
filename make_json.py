@@ -97,9 +97,9 @@ result_json = {
     'version_release_upper_in_sisyphus': []
 }
 
-print('______________________________Adding p10 packages____________________________')
+print('______________________________Adding p10 packages_____________________________')
 add_packs_from_file_to_obj_array('p10', data_p10, added_packs_p10)
-print('__________________________Adding sisyphus packages___________________________')
+print('___________________________Adding sisyphus packages___________________________')
 add_packs_from_file_to_obj_array('sisyphus', data_sisyphus, added_packs_sisyphus)
 
 #  Вывод пакетов которых нет в sisyphus, но есть в p10
