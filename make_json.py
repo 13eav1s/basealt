@@ -73,13 +73,26 @@ added_packs_sisyphus = []
 added_packs_p10 = []
 
 
-add_packs_from_file_to_obj_array('sisyphus', data_sisyphus, added_packs_sisyphus)
 add_packs_from_file_to_obj_array('p10', data_p10, added_packs_p10)
+add_packs_from_file_to_obj_array('sisyphus', data_sisyphus, added_packs_sisyphus)
 
 #  Вывод пакетов которых нет в sisyphus, но есть в p10
+print('__________Вывод пакетов которых нет в sisyphus, но есть в p10__________')
 get_special_packs(added_packs_p10, added_packs_sisyphus, data_p10)
 
 #  Вывод пакетов которых нет в p10, но есть в sisyphus
+print('__________Вывод пакетов которых нет в p10, но есть в sisyphus__________')
 get_special_packs(added_packs_sisyphus, added_packs_p10, data_sisyphus)
 
 identical_packages = set(added_packs_p10) & set(added_packs_sisyphus)
+
+#  Добавление идентичных пакетов для сравнения версий
+ident_packs_p10 = []
+ident_packs_sisyphus = []
+print('______________добавление пакетов version-release  которых больше в sisyphus чем в p10___________________')
+for pack in identical_packages:
+    p10_new = data_p10[added_packs_p10.index(pack)]
+    sisyphus_new = data_sisyphus[added_packs_sisyphus.index(pack)]
+    if sisyphus_new.version > p10_new.version:
+        print(sisyphus_new)
+pass
