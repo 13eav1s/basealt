@@ -1,6 +1,11 @@
 import json
 import copy
 from typing import List
+from packaging import version
+
+
+def v_compare(v1: str, v2: str) -> bool:
+    return version.parse(v1) > version.parse(v2)
 
 
 class Package:
@@ -123,7 +128,8 @@ col_packs = 0
 for pack in identical_packages:
     p10_new = data_p10[added_packs_p10.index(pack)]
     sisyphus_new = data_sisyphus[added_packs_sisyphus.index(pack)]
-    if sisyphus_new.version > p10_new.version:
+    # if sisyphus_new.version > p10_new.version:
+    if v_compare(sisyphus_new.version, p10_new.version):
         col_packs += 1
         sisyphus_new_dict = {
             'name': sisyphus_new.name,
