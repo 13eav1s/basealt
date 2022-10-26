@@ -8,6 +8,7 @@
 * Make sure the folder's permissions allow you to create files in it
 * Make sure that the make_json.py and cli_utility.sh files are in the utility folder
 * Add launch rights to cli_utility.sh utility
+* Make sure you have pip installed
 ```shell
 chmod +x cli_utility.sh
 ```
