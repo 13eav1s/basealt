@@ -1,6 +1,5 @@
 import json
 import copy
-import os
 from typing import List
 
 
@@ -19,14 +18,13 @@ class Package:
 
     def __init__(self, name: str, epoch: str, version: str, release: str, arch: str, disttag: str, buildtime: str, source: str):
         self.name = name
-        self.epoch.add(epoch)
-        self.version.add(version)
-        self.release.add(release)
-        self.arch.add(release)
-        self.disttag.add(release)
-        self.buildtime.add(release)
-        self.source.add(source)
-        copy.copy(self)
+        self.epoch = {epoch, }
+        self.version = {version, }
+        self.release = {release, }
+        self.arch = {release, }
+        self.disttag = {release, }
+        self.buildtime = {release, }
+        self.source = {source, }
 
 
 def add_to_arr_packs(added_packs_f, array: List[Package], name, epoch, version, release, arch, disttag, buildtime, source):
@@ -42,7 +40,7 @@ def add_to_arr_packs(added_packs_f, array: List[Package], name, epoch, version, 
     else:
         added_packs_f.append(name)
         pack = Package(name, epoch, version, release, arch, disttag, buildtime, source)
-        array.append(copy.copy(pack))
+        array.append(copy.deepcopy(pack))
         print('adding pack', pack.name, '...', sep='')
 
 
@@ -74,11 +72,15 @@ data_p10 = []
 added_packs_sisyphus = []
 added_packs_p10 = []
 
-add_packs_from_file_to_obj_array('sisyphus', data_sisyphus, added_packs_sisyphus)
-add_packs_from_file_to_obj_array('p10', data_p10, added_packs_p10)
+
+add_packs_from_file_to_obj_array('test1', data_sisyphus, added_packs_sisyphus)
+add_packs_from_file_to_obj_array('test2', data_p10, added_packs_p10)
 
 #  Вывод пакетов которых нет в sisyphus, но есть в p10
 get_special_packs(added_packs_p10, added_packs_sisyphus, data_p10)
 
 #  Вывод пакетов которых нет в p10, но есть в sisyphus
 get_special_packs(added_packs_sisyphus, added_packs_p10, data_sisyphus)
+
+identical_packages = set(added_packs_p10) & set(added_packs_sisyphus)
+pass
