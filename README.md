@@ -1,31 +1,31 @@
-# Инструкция по запуску
-## Требования перед запуском
-* Утилита только на опреационной системе Linux
-* Скрипт работает при установленном python 3
-* Для работы требуется соединение с сетью интернет
-## Подготовка перед запуском
-* Перейдите в рабочую папку скрипта
-* Убедитесь что в права папки разрешают создавать в ней файлы
-* Убедитесь что в папке утилиты находятся файлы make_json.py и cli_utility.sh
-* Добавьте права на запуск утилите cli_utility.sh
+# Startup instructions
+## Requirements before starting
+* The utility works only on the Linux operating system.
+* Script works with python 3 installed
+* Requires internet connection to work
+## Preparation before launch
+* Change to the working directory of the script
+* Make sure the folder's permissions allow you to create files in it
+* Make sure that the make_json.py and cli_utility.sh files are in the utility folder
+* Add launch rights to cli_utility.sh utility
 ```shell
 chmod +x cli_utility.sh
 ```
-## Запуск утилиты
-Убедитесь что вы находитесь в папке скрипта.
+## Running the utility
+Make sure you are in the script folder.
 
-Для запуска введите:
+To run, enter:
 ```shell
 ./cli_utitlity.sh
 ```
-## Просмотр результата
-После завершения работы скрипта будут создан и записан файл result.JSON, в котором находится
-структура, которая содержит:
-* Все пакеты, которые есть в p10 но нет в sisyphus
-* Все пакеты, которые есть в sisyphus но их нет в p10
-* Все пакеты, version-release  которых больше в sisyphus чем в p10
+## View result
+After the script is completed, the result.JSON file will be created and written, which contains
+structure that contains:
+* All packages that are in p10 but not in sisyphus
+* All packages that are in sisyphus but not in p10
+* All packages whose version-release is greater in sisyphus than in p10
 
-## Структура result.JSON
+## Result.json structure
 ```json
 {
     "only_in_p10": [

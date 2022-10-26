@@ -1,15 +1,15 @@
 #!/bin/bash
 
-echo 'Пакеты с ветки p10 будут записаны в файл p10'
+echo 'Packages from branch p10 will be written to file p10'
 touch p10
-echo 'Пакеты с ветки sisyphus будут записаны в файл sisyphus'
+echo 'Packages from the sisyphus branch will be written to the sisyphus file'
 touch sisyphus
-echo $'result.JSON - файл, в котором отражены все пакеты, которые есть в p10 но нет в sisyphus.\nВсе пакеты, которые есть в sisyphus но их нет в p10.\nВсе пакеты, version-release  которых больше в sisyphus чем в p10'
+echo $'result.JSON - a file that reflects all the packages that are in p10 but not in sisyphus.\nAll packages that are in sisyphus but not in p10.\nAll packages whose version-release is greater in sisyphus than in p10'
 touch result.JSON
-echo 'Запись пакетов с ветки p10 в файл p10'
+echo 'Writing packages from p10 branch to p10 file'
 curl https://rdb.altlinux.org/api/export/branch_binary_packages/p10 > p10
-echo 'Запись пакетов с ветки sisyphus в файл sisyphus'
+echo 'Writing packages from sisyphus branch to sisyphus file'
 curl https://rdb.altlinux.org/api/export/branch_binary_packages/sisyphus > sisyphus
-echo 'Запись в result.JSON'
+echo 'Writing to result.JSON'
 python3 make_json.py
-echo 'Скрипт завершил свою работу'
+echo 'The script has completed its work'
